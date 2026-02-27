@@ -1,107 +1,65 @@
----
-name: css-theme-generator
-description: 专门为 AionUI 生成自定义 CSS 主题的技能。支持根据风格描述（如“赛博朋克”、“清新自然”、“暗黑哥特”）生成完整的配色方案。Triggers: "帮我生成主题", "做一个主题", "换个配色", "生成CSS", "theme", "配色方案", "generate theme", "create css theme".
----
+AionUI CSS Theme Generator (English Documentation)
+Overview
+A specialized tool for AionUI that automatically derives a full set of CSS variables and component styles based on text descriptions or uploaded background images. It generates roughly 1,200 lines of CSS code and saves it as a .css file.
 
-# CSS Theme Generator (AionUI 主题生成器)
+⚠️ Critical Instruction for AI Agent
+Before performing any generation task, you must load the following files. Do not fabricate CSS or omit lines from the template.
 
-这是一个专门为 AionUI 设计的 CSS 主题生成技能。它能根据用户的文字描述或上传的背景图片，自动推导出一整套符合 AionUI 规范的 CSS 变量和组件样式。
+references/color-theory.md (Color derivation logic)
 
-## Overview (概览)
+references/css-template.md (Output template)
 
-AionUI 支持通过粘贴自定义 CSS 来改变整个界面的外观。本技能通过分析用户的审美偏好或图片色调，生成约 1200 行的完整 CSS 代码，并将其保存为 `.css` 文件。
+Workflow
+Step 1: Understand User Request
 
-## Workflow (工作流)
+Identify style keywords (Cyberpunk, Retro-futurism, etc.).
 
-> ⚠️ **CRITICAL INSTRUCTION FOR AI AGENT (防偷懒警告)** ⚠️
-> 在你执行任何生成任务之前，你**必须**使用读取工具加载以下两个文件：
-> 1. `references/color-theory.md` (色彩推导逻辑)
-> 2. `references/css-template.md` (输出模板)
-> 绝对不要凭记忆捏造 CSS！绝对不要省略任何一行模板！你的输出必须精确匹配模板中的所有类名和结构，仅替换 `{{PLACEHOLDER}}`。如果你觉得输出可能会超长截断，宁可被截断，也不准自行简写或省略（用户会发送"继续"来补全）。
+Identify background images (used for color inspiration only).
 
+Confirm mode preference (Light/Dark; default is both).
 
-### Step 1: Understand User Request (理解需求)
-识别用户的核心需求：
-- **风格关键词**：如“赛博朋克”、“清新自然”、“暗黑哥特”、“复古未来”等。
-- **背景图片**：如果用户上传了图片，仅用于提取配色灵感。
-- **模式偏好**：是否需要同时支持浅色 (Light) 和深色 (Dark) 模式（默认两者都生成）。
+Step 2: Color Palette Analysis
 
-### Step 2: Color Palette Analysis (色彩分析)
-- **有背景图时**：使用可用的图像分析工具分析图片的主导色。从最显著的非中性色中提取 `primary` 颜色。
+With Image: Extract the primary non-neutral color using image analysis tools.
 
-  **分析重点**：
-  1. Primary color - 最显著的非中性色
-  2. Accent color - 次要强调色
-  3. Overall atmosphere/mood - 整体氛围
-  4. 具体的 hex 颜色值
+Without Image: Map the description to a palette using the style mapping table in references/color-theory.md.
 
-- **无背景图时**：根据风格描述推导配色方案（参考 `references/color-theory.md` 中的风格映射表）。
+Step 3: Variable Derivation
 
-### Step 3: Variable Derivation (变量推导)
-基于主色调推导全套 AionUI 变量（包括 `--bg-1`, `--text-primary`, `--accent` 等）。
- 详细的推导逻辑请参考 `references/color-theory.md`。
- **高级特权**：如果你判断用户需要"赛博朋克"、"玻璃拟物"等极具个性的风格，你拥有"越界特权"，可以打破基础亮度限制。
+Derive all AionUI variables (e.g., --bg-1, --text-primary).
 
-### Step 4: CSS Generation (生成代码)
-使用 AionUI 标准模板填充变量和样式。
-- 完整的 CSS 模板结构请参考 `references/css-template.md`。
-- 注意：AionUI 的 `customCssProcessor` 会自动为所有属性添加 `!important`，生成时无需手动添加。
- **不要在 CSS 中写任何背景图相关的代码**。
- **高阶特效槽**：模板最末尾提供了一个 `{{ADVANCED_EFFECTS_CSS}}` 占位符。如果你要实现发光、模糊、复杂渐变等高级风格，把那些覆盖用的高级 CSS 写在这个占位符里。
+Advanced Privilege: You may bypass standard brightness limits for "Cyberpunk" or "Glassmorphism" styles.
 
-### Step 5: Save and Present (保存与交付)
-将生成的 CSS 代码写入本地 `.css` 文件，并向用户提供文件路径。
+Step 4: CSS Generation
 
-**重要**：确保 CSS 文件使用 UTF-8 编码，并在文件开头包含 `@charset "UTF-8";` 声明（css-template.md 模板已包含此声明）。
+Fill the references/css-template.md placeholders with actual values.
 
-**推荐保存方式**（Python）：
-```python
-import os
-css_content = """...生成的 CSS 代码..."""
-file_path = os.path.expanduser("~/Desktop/aion-theme-[style].css")
+Note: Do not add !important manually (AionUI adds it automatically).
 
-# 用 UTF-8 编码保存
-with open(file_path, 'w', encoding='utf-8') as f:
-    f.write(css_content)
-```
+Note: Do not write background image code. Place high-level effects (glows, blurs) in the {{ADVANCED_EFFECTS_CSS}} placeholder at the end.
 
-**也可以使用 Write 工具**，只要确保 CSS 文件第一行是 `@charset "UTF-8";` 即可避免中文乱码。
+Step 5: Save and Present
 
----
+Save the code to ~/Desktop/aion-theme-[style].css.
 
-## 背景图处理（重要！）
+Encoding: Must use UTF-8 and start with @charset "UTF-8";.
 
-**本 skill 只生成配色 CSS，不处理背景图。**
+Important Rules
+Background Images: This skill does not handle background images. Users must upload them manually in AionUI Settings → Theme. AionUI will then automatically append the background image block to your CSS.
 
-**原因**：AionUI 的背景图需要在主题设置中手动上传。当用户在 AionUI 主题编辑器中上传图片时，AionUI 会**自动在 CSS 末尾追加**一个完整的背景图样式块（使用 `/* AionUi Theme Background Start */` 标记）。
+Encoding: Ensure the file is UTF-8 to prevent garbled Chinese comments.
 
-**使用方法**：
-1. 用本 skill 生成配色 CSS
-2. 在 AionUI 主题设置中上传背景图（设置 → 主题 → 选择/创建主题 → 上传背景图）
+Compatibility: Use the data-theme attribute for dark mode (do not use media queries).
 
-这样配色和背景图分开处理，更加灵活。
+Color Format: Use Hex (#rrggbb) or rgba() for transparency.
 
----
+Output Format
+Save File: Path should be ~/Desktop/aion-theme-[style].css.
 
-## Important Notes (重要提示)
+Explain Design: Provide 3–5 sentences on color choice and overall vibe.
 
-- **编码问题**：生成的 CSS 文件必须使用 **UTF-8 编码**，并在文件开头包含 `@charset "UTF-8";` 声明，避免中文注释乱码。
-- **兼容性**：生成的 CSS 必须严格遵循 AionUI 的变量命名规范。
-- **双模式**：默认同时生成浅色（`:root`）和深色（`[data-theme='dark']`）两套完整样式。AionUI 使用 `data-theme` 属性切换明暗模式，不使用 `prefers-color-scheme` 媒体查询。
-- **背景图**：本 skill 不处理背景图，用户需要在 AionUI 主题设置中手动上传。
-- **必须读取的依赖文件**（不读取禁止输出）：
-  - 完整 CSS 模板结构：`references/css-template.md`
-  - 色彩推导方法论：`references/color-theory.md`
-## Output Format (输出格式)
+Usage Instructions: * Open AionUI → Settings → Theme → Custom CSS.
 
-1. **保存 CSS 文件**：将生成的 CSS 保存为 `~/Desktop/aion-theme-[style].css`（例如 `aion-theme-cyberpunk.css`），确保 UTF-8 编码。
-2. **说明配色设计**：向用户简要说明配色设计思路（3-5 句话，说明选了什么主色、为什么、整体风格感受）。
-3. **提供使用说明**：告知文件路径，提醒用户：
-   - 打开 AionUI → 设置 → 主题 → 自定义 CSS → 粘贴内容
-   - 如需背景图，在主题设置中单独上传
+Paste the file content.
 
-## 注意事项 (Caveats)
-
-- AionUI 的 `customCssProcessor` 会自动为 CSS 添加 `!important`，因此生成的 CSS 中**不要手动添加** `!important`。
-- **背景图**：本 skill 不处理背景图，请用户在 AionUI 主题设置中手动上传。
-- CSS 中的所有颜色值应使用 hex 格式（`#rrggbb`），需要透明度时使用 `rgba()` 格式。
+Upload the background image separately in theme settings if needed.
